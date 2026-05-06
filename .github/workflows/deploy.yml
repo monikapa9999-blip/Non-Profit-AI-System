@@ -37,19 +37,26 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           script: |
-           cd /home/ubuntu/Non-Profit-AI-System
+            cd /home/ubuntu
 
-           git reset --hard
-           git pull origin main
+            # Clone repo if not exists
+            if [ ! -d "Non-Profit-AI-System" ]; then
+              git clone https://github.com/madhuri0911/Non-Profit-AI-System.git
+            fi
 
-           echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" > backend/.env
+            cd /home/ubuntu/Non-Profit-AI-System
 
-           cd infra
-           sudo docker stop $(docker ps -q) 2>/dev/null || true
-           sudo docker rm $(docker ps -aq) 2>/dev/null || true
+            git reset --hard
+            git pull origin main
 
-  
-           sudo docker compose pull
+            # Ensure backend folder exists
+            mkdir -p backend
 
+            # Create .env file
+            echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" > backend/.env
 
-           sudo docker compose up -d
+            cd infra
+
+            sudo docker compose pull
+
+            sudo docker compose up -d --build
