@@ -22,13 +22,13 @@ jobs:
 
       - name: Build & Push Backend
         run: |
-          docker build -t 2201409/infra-backend ./backend -f infra/Dockerfile.backend
-          docker push 2201409/infra-backend
+          docker build -t madhuri0911/infra-backend ./backend -f infra/Dockerfile.backend
+          docker push madhuri0911/infra-backend
 
       - name: Build & Push Frontend
         run: |
-          docker build -t 2201409/infra-frontend ./frontend -f infra/Dockerfile.frontend
-          docker push 2201409/infra-frontend
+          docker build -t madhuri0911/infra-frontend ./frontend -f infra/Dockerfile.frontend
+          docker push madhuri0911/infra-frontend
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.10
