@@ -1,7 +1,7 @@
 services:
 
   backend:
-    image: 2201409/infra-backend:latest
+    image: madhuri0911/infra-backend:latest
     container_name: nonprofit_backend
     env_file:
       - ../backend/.env
@@ -12,7 +12,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: 2201409/infra-frontend:latest
+    image: madhuri0911/infra-frontend:latest
     container_name: nonprofit_frontend
     ports:
       - "3000:80"
