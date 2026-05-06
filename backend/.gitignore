@@ -1,0 +1,28 @@
+# 🔹 Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 🔹 Virtual Environment (VERY IMPORTANT)
+venv/
+env/
+
+# 🔹 Environment variables
+.env
+
+# 🔹 Logs
+*.log
+
+# 🔹 OS files
+.DS_Store
+Thumbs.db
+
+# 🔹 IDEs
+.vscode/
+.idea/
+
+# 🔹 Node (if frontend exists)
+node_modules/
+dist/
+build/

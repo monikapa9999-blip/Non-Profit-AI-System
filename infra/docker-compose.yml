@@ -1,0 +1,26 @@
+services:
+
+  backend:
+    image: 2201409/infra-backend:latest
+    container_name: nonprofit_backend
+    env_file:
+      - ../backend/.env
+    ports:
+      - "8080:8080"
+    networks:
+      - nonprofit_network
+    restart: unless-stopped
+
+  frontend:
+    image: 2201409/infra-frontend:latest
+    container_name: nonprofit_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - nonprofit_network
+    restart: unless-stopped
+
+networks:
+  nonprofit_network:
