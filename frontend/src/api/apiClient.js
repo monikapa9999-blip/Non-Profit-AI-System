@@ -3,7 +3,7 @@ import axios from "axios";
 const apiClient = axios.create({
 baseURL: "http://13.206.207.12:8080",
   headers: { "Content-Type": "application/json" },
-  timeout: 30000,
+  timeout: 60000,
 })
 
 // http://15.207.184.18:3000/
