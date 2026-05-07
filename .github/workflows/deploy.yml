@@ -11,7 +11,7 @@ jobs:
 
     steps:
 
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
       - name: Login to Docker Hub
@@ -20,15 +20,33 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build & Push Backend
-        run: |
-          docker build -t madhuri0911/infra-backend ./backend -f infra/Dockerfile.backend
-          docker push madhuri0911/infra-backend
+      # ---------------- BACKEND ----------------
 
-      - name: Build & Push Frontend
+      - name: Build Backend Image
         run: |
-          docker build -t madhuri0911/infra-frontend ./frontend -f infra/Dockerfile.frontend
-          docker push madhuri0911/infra-frontend
+          docker build \
+          -t madhuri0911/infra-backend:latest \
+          -f infra/Dockerfile.backend \
+          ./backend
+
+      - name: Push Backend Image
+        run: |
+          docker push madhuri0911/infra-backend:latest
+
+      # ---------------- FRONTEND ----------------
+
+      - name: Build Frontend Image
+        run: |
+          docker build \
+          -t madhuri0911/infra-frontend:latest \
+          -f infra/Dockerfile.frontend \
+          ./frontend
+
+      - name: Push Frontend Image
+        run: |
+          docker push madhuri0911/infra-frontend:latest
+
+      # ---------------- DEPLOY ----------------
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.10
@@ -37,6 +55,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           script: |
+
+            # Go to home directory
             cd /home/ubuntu
 
             # Clone repo if not exists
@@ -44,19 +64,32 @@ jobs:
               git clone https://github.com/madhuri0911/Non-Profit-AI-System.git
             fi
 
-            cd /home/ubuntu/Non-Profit-AI-System
+            # Enter project
+            cd Non-Profit-AI-System
 
+            # Pull latest code
             git reset --hard
             git pull origin main
 
-            # Ensure backend folder exists
+            # Create env file
             mkdir -p backend
 
-            # Create .env file
             echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" > backend/.env
 
+            # Go to infra
             cd infra
 
+            # Stop old containers
+            sudo docker compose down
+
+            # Remove unused images
+            sudo docker image prune -af
+
+            # Pull latest images from Docker Hub
             sudo docker compose pull
 
-            sudo docker compose up -d --build
+            # Recreate containers with latest images
+            sudo docker compose up -d --force-recreate
+
+            # Show running containers
+            sudo docker ps
